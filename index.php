@@ -35,13 +35,13 @@
 					$result="";
 					break;
             case 500:
-                    $error_status="500: Twitter servers replied with an error. Hopefully they'll be OK soon!";
+                    $error_status="500: The servers replied with an error. Hopefully they'll be OK soon!";
                     break;
             case 502:
-                    $error_status="502: Twitter servers may be down or being upgraded. Hopefully they'll be OK soon!";
+                    $error_status="502: The servers may be down or being upgraded. Hopefully they'll be OK soon!";
                     break;
             case 503:
-                    $error_status="503: Twitter service unavailable. Hopefully they'll be OK soon!";
+                    $error_status="503: The service unavailable. Hopefully they'll be OK soon!";
                     break;
             default:
                     $error_status="Undocumented error: " . $status_code;
