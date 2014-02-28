@@ -10,10 +10,14 @@ CONTENU DU FICHIER
 INTRODUCTION
 ------------
 Une simple application intégré dans github pour faciliter le calcule de deux paramètres.
+Le client appèle le serveur pour calculer l'action choisi.
 Une page client index.php qui appèle le serveur afin de calculer une action simple choisi 
 par le client lui même.
 Une page server.java complètant l'action d'un serveur qui utilise le langage java 
 et la combinaison entre les deux pages java et php se fait par l'outil curl.
+Restfull un style d'architecture est particulièrement bien adapté au World Wide Web mais 
+n'en est pas dépendant. Les contraintes, telles que définies par Roy Fielding, 
+peuvent s'appliquer à d'autres protocoles d'application que HTTP en utilisant les méthodes GET et POST.
 
 CURL
 ----
@@ -27,4 +31,4 @@ L'initialisation du curl se fait sur l'URL suivant: http://localhost:8080/WebApp
 
 REMARQUE
 --------
-Attention pour la page index.php utilise le port 8080.
+Attention pour le port change avec le changement du serveur deployé.
