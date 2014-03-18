@@ -1,0 +1,182 @@
+REST :Representation State Transfer
+-----------------------------------
+Il doit y avoir une solution plus simple pour faire des services Web plus simplement. 
+La solution existe et s'appelle REST ou Representation State Trasnfer. 
+REST est un style d'architecture de services web qui utilise les standards Web déjà très utilisé, plus spécifiquement HTTP.
+Il n'utilise pas SOAP, WSDL ou UDDI, et parfois même pas XML. REST utilise des conventions inspirés de HTTP
+L'appel d'un service se fait par un url et passe ses paramètres exactement comme une application web conventionnelle.
+
+HTTP Get pour un appel de procédure idempotente (ne change pas l'état du système distant et peut être répétés sans changement à la réponse) ou d'un document
+
+ protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+    
+    
+HTTP POST pour un appel de procédure nécissitant des paramètre plus complexe (sérialisation d'objet, ou xml) et/ou qui n'est pas idempotente
+
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        processRequest(request, response);
+    }
+    
+HTTP PUT pour la création d'éléments
+
+HTTP DELETE pour destruction
+
+
+les url définissent les ressources (/utilisateur/bpiette ) donc pas plus de point d'interogation dans l'url pour 
+specifier les valeurs des variables utilisées.
+La sérialisation d'objet ou de messages peut se faire en xml, mais aussi en texte seulement, 
+en JSON (Javascript Object Notation) ou YAML (Yet Another Markup Language)
+JSON (JavaScript Object Notation – Notation Objet issue de JavaScript) est un format léger d'échange de données.
+Il est facile à lire ou à écrire, aisément analysable ou générable par des machines. 
+Json est basé sur un sous-ensemble du langage de programmation JavaScript .
+C'est un format texte complètement indépendant de tout langage, mais les conventions qu'il utilise seront familières à tout programmeur habitué aux langages descendant du C, 
+comme par exemple : C lui-même, C++, C#, Java, JavaScript, Perl, Python et bien d'autres. 
+Ces propriétés font de JSON un langage d'échange de données idéal.
+
+JSON se base sur deux structures:
+
+Une collection de couples nom/valeur. Divers langages la réifient par un objet, un enregistrement, une structure, un dictionnaire, une table de hachage, une liste typée ou un tableau associatif.
+Une liste de valeurs ordonnées. La plupart des langages la réifient par un tableau, un vecteur, une liste ou une suite.
+Ces structures de données sont universelles.
+Pratiquement tous les langages de programmation modernes les proposent sous une forme ou une autre.
+Il est raisonnable qu'un format de données interchangeable avec des langages de programmation se base aussi sur ces structures.
+
+Ces mêmes éléments représentent 3 types de données.
+
+*Objet :
+Un objet est défini par un ensemble d’associations clé/valeur. Il commence par une accolade ouvrante ‘{‘ et se termine par une accolade fermante ‘}’. Chaque nom est suivi de deux-points ‘:’ et les couples nom/valeur sont séparés par des virgules ‘,’.
+
+*Tableau :
+Un tableau est une collection de valeurs ordonnées. Il commence par un crochet ouvrant ‘[' et se termine par un crochet fermant ']‘. Les valeurs sont séparées par des virgules ‘,’.
+
+*Valeurs :
+Une valeur peut être soit une chaîne de caractères entre guillemets, soit un nombre, soit true ou false ou null, 
+soit un objet soit un tableau. Ces structures peuvent être imbriquées.
+Une chaîne de caractères est une suite de zéro ou plus caractères Unicode, entre guillemets
+et utilisant les échappements avec antislash. Un caractère est représenté par une chaîne d’un seul caractère. 
+Une chaîne de caractères est très proche de son équivalent en Java.
+Un nombre est très proche de ceux qu’on peut rencontrer en Java, 
+notez toutefois que les formats octal et hexadécimal ne sont pas utilisés.
+
+{ "menu":
+   {   "id": "file",
+       "value": "File",
+       "popup": {
+           "menuitem": [
+                 {"value": "New", "onclick": "CreateNewDoc()"},
+                 {"value": "Open", "onclick": "OpenDoc()"},
+                {"value": "Close", "onclick": "CloseDoc()"}
+         ]
+      }
+   }
+}
+la même expression en XML:
+
+
+<!--<menu id="file" value="File">
+  <popup>
+    <menuitem value="New" onclick="CreateNewDoc()" />
+    <menuitem value="Open" onclick="OpenDoc()" />
+    <menuitem value="Close" onclick="CloseDoc()" />
+  </popup>
+</menu> -->
+
+En effet, JSON se base plus sur un modèle clé/valeur que sur un format de balisage. 
+Cela permet d'éviter les balises de fermeture, la répétition et cela peut éventuellement représenter un gain de place 
+sur de très gros fichiers .
+Donc comme avantages, JSON est simple le chargement et la manipulation d’un arbre JSON en JS, est triviale exemple :
+
+// Une chaîne JSON contenant une liste de patients
+var JasonString = '{"patients" : [{"nom":"John", "age": "32"},{"nom":"Rosie", "age":"25"}]';
+
+Il est léger car  il optimise l’utilisation de la bande passante des serveurs et minimise la charge mémoire des explorateurs.
+A arbre égal, le JSON sera toujours plus petit que son équivalent XML.
+Il est portable nous aurons aucun traitement spécifique par browser à écrire, il suffit d’avoir le support JavaScript.
+Il est indépendant tout comme son aîné, bien que nativement supporté en JavaScript,
+il existe des API dans toutes sortes de langages à Java.
+
+En outre, JSON ne supporte pas les espaces de noms comme XML. On ne peut pas utiliser des attributs de même nom appliqués à différents contextes.
+Il n’existe pas, à ce jour, d’équivalent au XSD / DTD pour JSON. Impossible de valider autre chose que la syntaxe et les valeurs fournies.
+On manque ici clairement d’un système pour valider la structure de l’arbre et contrôler plus finement les valeurs à l’aide de patterns par exemple.
+N’oublions pas que JSON est jeune, il faudra donc porter un oeil attentif au choix des API les plus matures.
+Et effectivement nous devons faire attention à l’injection de code malicieux dans une chaîne JSON. 
+Il faut s’assurer de bien échaper les quote et double quote.
+
+Le travail de l'architecte
+ -------------------------
+
+Le premier travail consiste à identifier et à nommer les ressources (au lieu de définir des API). 
+En aucun cas un URL ne doit être la conséquence d'un développement. 
+
+
+Il faut bien sûr préférer un nommage logique à un nommage physique pour masquer une implémentation spécifique.
+Sous Apache, il existe un module mod_rewrite qui permet de manière transparente de rediriger une URL vers une autre. 
+Sous IIS, c'est un peu plus compliqué car il n'y a rien en standard.
+On peut soit écrire un filtre ISAPI, soit utiliser un composant d'une tierce partie.
+Les ressources doivent être identifiées par des noms, pas par des verbes.
+Les ressources représentent des états, pas des actions. C'est d'ailleurs la grande différence avec des techniques du type RPC ou Objet qui détaillent à l'infini des actions (méthodes).
+Les URL ne doivent pas changer car vous ne saurez jamais qui détient des vieilles références .
+Le contenu des bases de données ou les entités métiers doivent avoir des URL. Tout navigateur devient un client du pauvre très utile pour les tests.
+Les références peuvent se trouver dans d’autres médias comme des emails ou de la documentation.. 
+Le XSLT devient utilisable pour présenter, inclure ou transformer les données.
+La toute puissance du HTTP GET et de la représentation hypermédia permet grâce à des liens de construire la navigation ou de fournir progressivement des détails. 
+L'état d'une application est donnée par son URL.
+C'est le client qui tire les représentations des ressources.
+Chaque requête doit comporter toutes les indications nécessaires pour son exécution  et ne doit pas s'appuyer sur un contexte stocké sur le serveur.
+Tous les services de l'application doivent donc être sans-état (stateless).
+
+
+La représentation des données doit s'appuyer sur des standards comme utf-8 pour le jeu de caractères:
+
+<!--<meta http-equiv="Content-Type" content="text/html; charset=utf-8"> -->
+
+le XML pour la syntaxe des documents et des vocabulaires spécifiques (Dublin Core, RSS, Atom...) pour la sémantique des données. 
+C'est le rôle de l'architecte de bien spécifier tous les standards de l'application.
+Il faut noter que l'URL logique ne contient pas d'indication sur la manière dont chaque ressource élabore ses réponses.
+C'est ce qu'on appelle un couplage lâche (loosely coupled). 
+C'est un principe général d'architecture des systèmes informatiques trop souvent oublié qui devient "naturel" avec REST.
+
+Quand la requête est complexe, il faut quelquefois réaliser un formulaire qui construira l'URI à partir de ses données.
+
+La sécurité
+-----------
+La sécurité (avec la performance) est souvent l'excuse avancée pour faire compliqué alors que seule la simplicité permet d'atteindre cet objectif.
+
+Comme c'est très bien expliqué dans le rapport PITAC de février 2005 remis au Président des Etats-Unis : 
+Cyber Security, a crisis of Prioritization, la faiblesse du modèle habituel de défense périmétrique, 
+généralement utilisé par les entreprises, est devenue douloureusement évidente.
+Ce modèle, fondé un peu sur le principe de la ligne Maginot, est censé protéger "l'intérieur" d'un système informatique d'un attaquant venu de "l'extérieur".
+Cependant, dès que la barrière est franchie à la suite d'une vulnérabilité logicielle ou d'une maladresse d'un opérateur, l'attaquant peut compromettre l'ensemble des systèmes sans guère plus d'efforts que pour en compromettre un.
+Ce n'est pas le seul problème de ce modèle. 
+La distinction entre "intérieur" et "extérieur" s'effondre avec la prolifération d'équipements connectés et la complexité toujours croissante des réseaux interconnectés.
+Un modèle plus réaliste est le modèle de suspicion mutuelle.
+Chaque composant d'un système ou d'un réseau est naturellement méfiant envers les autres composants du réseau et demande systématiquement une authentification.
+
+ 
+
+La sécurité des échanges de données doit fournir 4 garanties:
+
+*Etre sûr de son interlocuteur. 
+ C'est l'authentification réciproque des correspondants ou des composants.
+ 
+*Etre sûr que les données transmises n'ont pas été modifiées accidentellement ou intentionnellement.
+ C'est l'intégrité des données.
+ 
+*Eviter que les données soient lues par des systèmes ou des personnes non autorisées.
+ C'est la confidentialité.
+ 
+*Eviter la contestation par l'émetteur de l'envoi des données.
+ C'est la signature, appelée aussi non répudiation.
+
+Avec REST et les URL logiques, il devient très facile de mettre en place un système de contrôle d'accès aux ressources.
+
+
+
+    
+    
+    
+    
